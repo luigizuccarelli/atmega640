@@ -15,4 +15,9 @@ This gives a good layer of abstraction (not dependant on specific pinouts)
 The controller is an omega onion + written in golang
 Data transferred for the temperature probe and accelerometer are int values, converiosn to float takes place at the golang omega contoller
 
+## AVR fuses
+Internal clock divide by 8 startup time set to max , spi and jtag enable, bootsize set to 00
 
+```bash
+-U lfuse:w:0x62:m -U hfuse:w:0x99:m -U efuse:w:0xff:m
+```

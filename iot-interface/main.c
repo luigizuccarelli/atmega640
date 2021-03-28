@@ -19,31 +19,31 @@ void uartInit(void)
 {
   // DDRE   = 0b00000000;
   // double baud rate
-	UCSR0A = 0b00000010;
-	UCSR0B = 0b00011000;
-	UCSR0C = 0b00000110;
+  UCSR0A = 0b00000010;
+  UCSR0B = 0b00011000;
+  UCSR0C = 0b00000110;
   //set to 12 - baud rate will be 9600
   UBRR0L = 0b00001100; 
   UBRR0H = 0b00000000;
 }
 
 unsigned char uartRxChar(void) {
-	while ((UCSR0A & (1 << RXC0)) == 0);
-	return(UDR0);			
+  while ((UCSR0A & (1 << RXC0)) == 0);
+  return(UDR0);			
 }
 
 void uartTxChar(char ch) {
-	while (! (UCSR0A & (1<<UDRE0)));	
-	UDR0 = ch ;
+  while (! (UCSR0A & (1<<UDRE0)));	
+  UDR0 = ch ;
 }
 
 void uartTxString(char *str) {
-	unsigned char j=0;
-	
-	while (str[j]!=0)	{
-		uartTxChar(str[j]);	
-		j++;
-	}
+  unsigned char j=0;
+
+  while (str[j]!=0)	{
+    uartTxChar(str[j]);	
+    j++;
+  }
 }
 
 void adcInit(void) {
@@ -75,27 +75,27 @@ int adcRead(char channel) {
 
 int main(void) {
   int t,x,y,z = 0;
-	char buf[50];
+  char buf[50];
 
   uartInit();
   adcInit();
 
   _delay_ms(100);
-	sei();
+  sei();
 
   while(1) {
     // wait to start measurement
-		uartRxChar();
+    uartRxChar();
     _delay_ms(10);
     // take accelerometer reading for x,y,z co ordinates
     x = adcRead(0);
     y = adcRead(1);
     z = adcRead(2);
     // take dsb1820 temp
-		t = ds18b20Gettemp();
-		sprintf(buf,"%d %d %d %d\n\r",t,x,y,z);
+    t = ds18b20Gettemp();
+    sprintf(buf,"%d %d %d %d\n\r",t,x,y,z);
     // send to serial usb
-	  uartTxString(buf);	
-	}
+    uartTxString(buf);	
+  }
   return 0;  
 }
